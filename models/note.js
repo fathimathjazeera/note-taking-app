@@ -7,6 +7,10 @@ const NoteSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  backroundColor: {
+    type: String,
+    default: "#ffffff"
+  }
 });
 
 const NoteModel = mongoose.model("Note", NoteSchema);

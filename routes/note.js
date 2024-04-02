@@ -9,9 +9,9 @@ import { tryCatch } from "../middlewares/tryCatch.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 const router = express.Router();
 
-router.post("/create", verifyToken, tryCatch(createNote));
+router.post("/createnote", verifyToken, tryCatch(createNote));
 router.get("/getnotes", tryCatch(getAllNotes));
-router.put("/update", verifyToken, tryCatch(updateNote));
-router.post("/delete", verifyToken, tryCatch(deleteNote));
+router.put("/updatenote/:id", verifyToken, tryCatch(updateNote));
+router.delete("/deletenote/:id", verifyToken, tryCatch(deleteNote));
 
 export default router;

@@ -1,10 +1,13 @@
 import UserModel from "../models/user.js";
 import { generateAccessToken } from "../utils/generateToken.js";
 import { authSchema } from "../utils/validation.js";
+import bcrypt from 'bcrypt'
+
+
 export const register = async (req, res) => {
   const { error, value } = authSchema.validate(req.body);
   const { username, email, password } = value;
-  const findUser = await users.findOne({ email: email });
+  const findUser = await UserModel.findOne({ email: email });
   if (error) {
     res.status(422);
     res.json({
@@ -19,16 +22,23 @@ export const register = async (req, res) => {
       message: "User with this email already exists",
     });
   }
-  const user = await UserModel.create({
+  const newuser = await UserModel.create({
     username: username,
     email: email,
     password: await bcrypt.hash(password, 10),
   });
+  let user = {
+    id: newuser._id,
+    username: newuser.username,
+  };
+  let token = generateAccessToken(user);
   res.status(200);
   res.json({
     status: "success",
+    auth: true,
     message: "Successfully registered. Verification email sent.",
-    data: user,
+    data: newuser,
+    token: token,
   });
 };
 
@@ -53,6 +63,7 @@ export const login = async (req, res) => {
           let token = generateAccessToken(user);
           res.status(200).json({
             auth: true,
+            status:"success",
             message: "successfully logged In",
             userId: user.id,
             token: token,
